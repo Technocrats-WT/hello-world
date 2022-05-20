@@ -35,7 +35,6 @@ jobs:
   job_fail: 
       docker: 
         - image: circleci/node:13.8.0
-
       steps: 
         - run: return 1
         - run:
@@ -89,7 +88,7 @@ workflows:
   say-hello-workflow:
     jobs:
       - print_workspace_ID
-      -job_fail
+      - job_fail
       # - save_hello_world_output
       # - print_output_file: 
       #     requires: 
