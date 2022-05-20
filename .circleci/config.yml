@@ -18,29 +18,44 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-  print-hello: 
+  save_hello_world_output: 
       docker: 
         - image: circleci/node:13.8.0
 
       steps: 
         - run: 
-            command: "echo Hello!!!"
+            command: echo "Hello World" > output.txt
+        - persist_to_workspace:
+            root: /tmp/workspace
+            paths: 
+               - target/output.txt
+               - build/*
   
-  print-world:
+  print_output_file: 
       docker: 
         - image: circleci/node:13.8.0
 
       steps: 
         - run: 
-            command: "echo World"
+            command: cat output.txt
+        - attach_workspace:
+            at: /tmp/workspace
+  
+  # print-world:
+  #     docker: 
+  #       - image: circleci/node:13.8.0
 
-  print-environment-variable:
-      docker: 
-        - image: circleci/node:13.8.0
+  #     steps: 
+  #       - run: 
+  #           command: "echo World"
 
-      steps: 
-        - run: 
-            command: echo $Name # this env var must be set within the project
+  # print-environment-variable:
+  #     docker: 
+  #       - image: circleci/node:13.8.0
+
+  #     steps: 
+  #       - run: 
+  #           command: echo $Name # this env var must be set within the project
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -48,10 +63,10 @@ workflows:
   say-hello-workflow:
     jobs:
       - say-hello
-      - print-hello
-      - print-world: 
+      - save_hello_world_output
+      - print_output_file: 
           requires: 
-              - print-hello
-      - print-environment-variable: 
-          requires: 
-              - print-world
+              - save_hello_world_output
+      # - print-environment-variable: 
+      #     requires: 
+      #         - print-world
