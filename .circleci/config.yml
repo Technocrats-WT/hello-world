@@ -2,6 +2,13 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+commands:
+  print_pipeline_id:
+    description: "Print workflow ID to console"
+    steps:
+      - run: echo ${CIRCLE_WORKFLOW_ID}
+
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -18,28 +25,35 @@ jobs:
           name: "Say hello"
           command: "echo Hello, World!"
 
-  save_hello_world_output: 
+  print_workspace_ID: 
       docker: 
         - image: circleci/node:13.8.0
 
       steps: 
-        - run: 
-            command: echo "hello world" > ~/output.txt
-        - persist_to_workspace:
-            root: ~/
-            paths: 
-               - output.txt
+        - commands
+
+  # save_hello_world_output: 
+  #     docker: 
+  #       - image: circleci/node:13.8.0
+
+  #     steps: 
+  #       - run: 
+  #           command: echo "hello world" > ~/output.txt
+  #       - persist_to_workspace:
+  #           root: ~/
+  #           paths: 
+  #              - output.txt
 
   
-  print_output_file: 
-      docker: 
-        - image: circleci/node:13.8.0
+  # print_output_file: 
+  #     docker: 
+  #       - image: circleci/node:13.8.0
 
-      steps: 
-        - attach_workspace:
-            at: ~/
-        - run: 
-            command: cat ~/output.txt
+  #     steps: 
+  #       - attach_workspace:
+  #           at: ~/
+  #       - run: 
+  #           command: cat ~/output.txt
         
   
   # print-world:
@@ -63,11 +77,11 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello
-      - save_hello_world_output
-      - print_output_file: 
-          requires: 
-              - save_hello_world_output
+      - print_workspace_ID
+      # - save_hello_world_output
+      # - print_output_file: 
+      #     requires: 
+      #         - save_hello_world_output
       # - print-environment-variable: 
       #     requires: 
       #         - print-world
