@@ -34,6 +34,14 @@ jobs:
         - run: 
             command: "echo World"
 
+  print-environment-variable:
+      docker: 
+        - image: circleci/node:13.8.0
+
+      steps: 
+        - run: 
+            command: echo $name # this env var must be set within the project
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
@@ -44,3 +52,6 @@ workflows:
       - print-world: 
           requires: 
               - print-hello
+      - print-environment-variable: 
+          requires: 
+              - print-world
