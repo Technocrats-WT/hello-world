@@ -26,20 +26,21 @@ jobs:
         - run: 
             command: echo "Hello World" > output.txt
         - persist_to_workspace:
-            root: /tmp/workspace
+            root: ~ /
             paths: 
-               - target/output.txt
-               - build/*
+               - output.txt
+
   
   print_output_file: 
       docker: 
         - image: circleci/node:13.8.0
 
       steps: 
+        - attach_workspace:
+            at: /
         - run: 
             command: cat output.txt
-        - attach_workspace:
-            at: /tmp/workspace
+        
   
   # print-world:
   #     docker: 
